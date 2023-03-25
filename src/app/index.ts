@@ -1,19 +1,17 @@
-import "./index.css"
-import path from 'path'
-import _ from 'lodash'
+import "./global.css"
 
-console.log("hello world!")
-document.onload = () => {
-    console.log("onload")
-    function component() {
-        const element = document.createElement('div');
-        
-        // Lodash, now imported by this script
-        element.innerHTML = _.join(['Hello', 'webpack'], ' ');
-        element.classList.add('hello');
-    
-        return element;
+type StartupFunction = () => void
+
+function afterPageIsReady(fn: StartupFunction) {
+    if (document.readyState != 'loading'){
+        fn();
+    } else {
+        document.addEventListener('DOMContentLoaded', fn);
     }
-    
-    document.body.appendChild(component());
 }
+
+afterPageIsReady(function() {
+
+    console.log("loaded")
+
+})
