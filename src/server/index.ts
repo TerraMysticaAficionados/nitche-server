@@ -9,6 +9,7 @@ const port = 8080;
 app.get('/', (req, res) => {
   res.sendFile(resolve(__dirname,"../app/index.html"));
 });
+// @TODO better bundle serving
 app.get("/bundle.js", (req, res) => {
   res.sendFile(resolve(__dirname,"../app/bundle.js"))
 })
