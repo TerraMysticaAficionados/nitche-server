@@ -11,7 +11,9 @@ function afterPageIsReady(fn: StartupFunction) {
 }
 
 afterPageIsReady(function() {
-
-    console.log("loaded")
-
+    document.querySelector("#videoElem")
+    const websocket = new WebSocket('ws://localhost:8080')
+    websocket.onopen = function() {
+        websocket.send("ping")
+    }
 })
