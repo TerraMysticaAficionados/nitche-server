@@ -1,7 +1,7 @@
 declare module "browserify-middleware" {
     import type Express from "express"
-    declare type Arraified<T> = T[]|boolean
-    declare const BrowserifyMiddlewareSettings: Partial<{
+    type Arraified<T> = T[]|boolean
+    type BrowserifyMiddlewareSettings = Partial<{
         external: Arraified<unknown>
         ignore: Arraified<unknown>
         ignoreMissing: boolean
@@ -20,7 +20,7 @@ declare module "browserify-middleware" {
         precompile: boolean
     }>
     
-    declare function browserify(path: string, options?:BrowserifyMiddlewareSettings): Express.NextFunction
+    function browserify(path: string, options?:BrowserifyMiddlewareSettings): Express.NextFunction
     export function directory(path: string, options?:BrowserifyMiddlewareSettings): Express.NextFunction
     export function file(path: string, options?:BrowserifyMiddlewareSettings): Express.NextFunction
     export function modules(path: string, options?:BrowserifyMiddlewareSettings): Express.NextFunction
