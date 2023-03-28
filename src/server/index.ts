@@ -1,12 +1,12 @@
 import express from "express";
 import { resolve } from "path";
-import browserify from "browserify-middleware";
 import expressWs from 'express-ws'
-// const websocketStream = require('websocket-stream/stream');
 import fs from "fs/promises"
-import {Readable} from "stream"
-import fsClassic from "fs"
-
+import {PassThrough} from "stream"
+import {path as ffmpegPath} from "@ffmpeg-installer/ffmpeg"
+import ffmpeg from "fluent-ffmpeg"
+import cors from "cors"
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 const { app, getWss, applyTo } = expressWs(express(),null,{
   wsOptions: {
@@ -14,6 +14,8 @@ const { app, getWss, applyTo } = expressWs(express(),null,{
   }
 });
 const port = 8080;
+
+app.use("/recordings",cors(), express.static(resolve(__dirname,"../../recordings")))
 
 app.get('/', (req, res) => {
   res.sendFile(resolve(__dirname,"../app/index.html"));
@@ -29,18 +31,50 @@ app.ws('/', function(ws, req) {
   });
   console.log('socket', req);
 });
-
+express.static
 app.ws("/socket-prototype/:id", async (ws, req) => {
   console.log('socket-prototype ping', req.params.id);
+
+  try {
+    await fs.rm("./recordings/"+req.params.id, {
+      "recursive":true
+    })
+    await fs.mkdir("./recordings/"+req.params.id, {
+      recursive: true
+    })
+  } catch(error) {
+    console.log(error)  
+  }
+  
+
+
   try {
   //  https://www.geeksforgeeks.org/node-js-fs-open-method/
-    let fstream = await (await fs.open(`./recordings/${req.params.id}.webm`, "w")).createWriteStream()
-    ws.on('message', function(msg:Buffer) {
-      fstream.write(Buffer.from(new Uint8Array(msg)));
+    let istream = new PassThrough()
+    let recorder:any = null
+    ws.on('message', function(data:Buffer) {
+      istream.push(Buffer.from(new Uint8Array(data)));
+      if(!recorder) {
+        let recordingPath = `./recordings/${req.params.id}/manifest.mpd`
+        recorder = ffmpeg().addInput(istream).addInputOptions([
+          '-re',
+        ]).addOutputOption([
+          '-f', 'dash'
+        ])
+        .on('start', ()=>{
+          console.log('Start recording >> ', recordingPath)
+        })
+        .on('end', ()=>{
+          console.log('Stop recording >> ', recordingPath)
+        })
+        .output(recordingPath)
+        recorder.run()
+      }
     });
     ws.on("close", () => {
       console.log("stream closed");
-      fstream.close()
+
+      if(recorder) istream.end()
     })
   } catch(error) {
     console.log(error)

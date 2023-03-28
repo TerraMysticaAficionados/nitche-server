@@ -2,4 +2,4 @@
 package-lock.json
 /dist
 .env*.local
-/recordings/*.webm
+/recordings/*
