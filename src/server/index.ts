@@ -30,8 +30,8 @@ app.ws('/', function(ws, req) {
   console.log('socket', req);
 });
 
-app.ws("/stream/:id", async (ws, req) => {
-  console.log('stream ping', req.params.id);
+app.ws("/socket-prototype/:id", async (ws, req) => {
+  console.log('socket-prototype ping', req.params.id);
   try {
   //  https://www.geeksforgeeks.org/node-js-fs-open-method/
     let fstream = await (await fs.open(`${req.params.id}.webm`, "w")).createWriteStream()
@@ -45,13 +45,8 @@ app.ws("/stream/:id", async (ws, req) => {
   } catch(error) {
     console.log(error)
   }
-
-  
-  
 })
 
-
-
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Socket server listening on port ${port}`)
 });
