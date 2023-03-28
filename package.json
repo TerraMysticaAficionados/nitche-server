@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-server": "tsc src/server/index.ts --esModuleInterop --outDir ./dist/server",
     "watch-server": "tsc src/server/index.ts --esModuleInterop --outDir ./dist/server --watch",
-    "start": "node ./dist/server/server.js",
+    "start": "node ./dist/server/index.js",
     "build-app": "webpack",
     "watch-app": "webpack --watch",
     "dev": "webpack serve",

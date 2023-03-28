@@ -45,6 +45,8 @@ app.ws("/stream/:id", async (ws, req) => {
   } catch(error) {
     console.log(error)
   }
+
+  
   
 })
 
