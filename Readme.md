@@ -1,4 +1,9 @@
 
+### Installation
+```
+# clone repo and cd into it.
+npm i # install dependencies
+```
 
 ### Build Frontend
 ```
