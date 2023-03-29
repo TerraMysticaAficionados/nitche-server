@@ -43,7 +43,11 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
       recursive: true
     })
   } catch(error) {
-    console.log(error)  
+    if(error.code == 'EEXIST') {
+      console.log("found previous stream", req.params.id)
+    } else {
+      console.log(error)  
+    }
   }
   
 
