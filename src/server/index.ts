@@ -31,7 +31,7 @@ app.ws('/', function(ws, req) {
   });
   console.log('socket', req);
 });
-express.static
+
 app.ws("/socket-prototype/:id", async (ws, req) => {
   console.log('socket-prototype ping', req.params.id);
 
