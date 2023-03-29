@@ -16,4 +16,5 @@ afterPageIsReady(function() {
     websocket.onopen = function() {
         websocket.send("ping")
     }
+    
 })

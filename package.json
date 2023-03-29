@@ -25,6 +25,7 @@
   "homepage": "https://github.com/TerraMysticaAficionados/nitche-server#readme",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@mapbox/node-pre-gyp": "^1.0.10",
     "browserify-middleware": "^8.1.1",
     "cors": "^2.8.5",
     "css-loader": "^6.7.3",
@@ -33,7 +34,8 @@
     "fluent-ffmpeg": "^2.1.2",
     "lodash": "^4.17.21",
     "style-loader": "^3.3.2",
-    "websocket-stream": "^5.5.2"
+    "websocket-stream": "^5.5.2",
+    "wrtc": "^0.4.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

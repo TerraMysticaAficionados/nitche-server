@@ -6,6 +6,8 @@ import {PassThrough} from "stream"
 import {path as ffmpegPath} from "@ffmpeg-installer/ffmpeg"
 import ffmpeg from "fluent-ffmpeg"
 import cors from "cors"
+import WebRtcConnectionManager from "./connections/webrtcconnectionmanager"
+import { mount }  from './rest/connectionsapi';
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 const { app, getWss, applyTo } = expressWs(express(),null,{
@@ -50,8 +52,6 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
     }
   }
   
-
-
   try {
   //  https://www.geeksforgeeks.org/node-js-fs-open-method/
     let istream = new PassThrough()
@@ -84,6 +84,11 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
     console.log(error)
   }
 })
+
+
+import recordAudioVideoStream from './recordAudioVideoStream'
+const connectionManager = WebRtcConnectionManager.create(recordAudioVideoStream);
+mount(app, connectionManager, `/webrtc-prototype`);
 
 app.listen(port, () => {
   console.log(`Socket server listening on port ${port}`)
