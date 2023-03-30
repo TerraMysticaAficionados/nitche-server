@@ -4,7 +4,6 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pagesSrc = path.resolve(__dirname, 'src/app/pages/')
 
-
 const baseConfig = {
   mode: 'development',
   devtool: 'inline-source-map',
@@ -28,7 +27,6 @@ const baseConfig = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
-    // modules: ['node_modules'],
   }
 }
 
@@ -36,9 +34,9 @@ const baseConfig = {
  * Compile folders under /src/app/pages/[pageName] where pageName a directory with index.ts and index.html
  * Pages are then made available as http://localhost:8080/[pageName].html
  * 
- * @param {*} config 
- * @param {*} pageName 
- * @param {*} pageTitle 
+ * @param {WebpackConfiguration} config 
+ * @param {string} pageName 
+ * @param {string} pageTitle 
  * @returns 
  */
 function createPageConfig(config, pageName, pageTitle = null) {
