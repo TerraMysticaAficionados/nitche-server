@@ -1,9 +1,11 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
+import path from 'path'
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const pagesSrc = path.resolve(__dirname, 'src/app/pages/')
 
-const tsWebpackConfig = {
+
+const baseConfig = {
   mode: 'development',
   devtool: 'inline-source-map',
   module: {
@@ -30,67 +32,35 @@ const tsWebpackConfig = {
   }
 }
 
-const homePageConfig = {
-  ...tsWebpackConfig,
-  entry: path.resolve(pagesSrc,'home/index.ts'),
-  output: {
-    path: path.resolve(__dirname, 'dist/app'),
-    filename: "home.bundle.js"
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/app/pages/home/index.html',
-      title: 'HOME',
-      filename: 'home.html',
-    })
-  ],
-}
-
-const twoPageConfig = {
-  ...tsWebpackConfig,
-  entry: path.resolve(pagesSrc,'two/index.ts'),
-  output: {
-    path: path.resolve(__dirname, 'dist/app'),
-    filename: "two.bundle.js"
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/app/pages/two/index.html',
-      title: 'TWO',
-      filename: 'two.html',
-    })
-  ],
-}
-
-const serverConfig = {
-  mode: 'development',
-  entry: path.resolve(__dirname, 'src/server/index.ts'),
-  devtool: 'inline-source-map',
-  output: {
-    path: path.resolve(__dirname, 'dist/server')
-  },
-  target:"node",
-  module: {
-    rules: [
-      {
-        test: /\.ts/,
-        use: [{
-          loader: 'ts-loader',
-          options: {
-            configFile: "tsconfig.server.json"
-          }
-        }],
-        exclude: [/node_modules/],
-      }
-    ]
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+/**
+ * Compile folders under /src/app/pages/[pageName] where pageName a directory with index.ts and index.html
+ * Pages are then made available as http://localhost:8080/[pageName].html
+ * 
+ * @param {*} config 
+ * @param {*} pageName 
+ * @param {*} pageTitle 
+ * @returns 
+ */
+function createPageConfig(config, pageName, pageTitle = null) {
+  return {
+    ...config,
+    entry: path.resolve(pagesSrc,`${pageName}/index.ts`),
+    output: {
+      path: path.resolve(__dirname, `dist/app/${pageName}`),
+      filename: `${pageName}.bundle.js`,
+      clean: true
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: `./src/app/pages/${pageName}/index.html`,
+        title: pageTitle || pageName.toUpperCase(),
+        filename: `index.html`,
+      })
+    ],
   }
 }
 
-module.exports = [
-  homePageConfig,
-  twoPageConfig,
-  // serverConfig
+export default [
+  createPageConfig(baseConfig, "home", "homepage"),
+  createPageConfig(baseConfig, "two", "second page")
 ]
