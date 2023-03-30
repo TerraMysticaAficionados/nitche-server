@@ -1,4 +1,5 @@
 import "./global.css"
+import test from "../../lib/test"
 
 type StartupFunction = () => void
 
@@ -16,5 +17,5 @@ afterPageIsReady(function() {
     websocket.onopen = function() {
         websocket.send("ping")
     }
-    
+    console.log(test.value)
 })

@@ -7,6 +7,8 @@
     "jsx": "react",
     "allowJs": true,
     "moduleResolution": "node",
-    "esModuleInterop" : true  //  allows modules to use `export =` (CommonJS)
-  }
+    "esModuleInterop" : true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
 }

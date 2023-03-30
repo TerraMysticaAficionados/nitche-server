@@ -5,10 +5,13 @@ import fs from "fs/promises"
 import {PassThrough} from "stream"
 import {path as ffmpegPath} from "@ffmpeg-installer/ffmpeg"
 import ffmpeg from "fluent-ffmpeg"
-import cors from "cors"
-import WebRtcConnectionManager from "./connections/webrtcconnectionmanager"
-import { mount }  from './rest/connectionsapi';
 ffmpeg.setFfmpegPath(ffmpegPath);
+import cors from "cors"
+import WebRtcConnectionManager from "./connections/webrtcconnectionmanager.js"
+import { mount }  from './rest/connectionsapi.js';
+import { fileURLToPath } from 'url';
+import path from "path"
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const { app, getWss, applyTo } = expressWs(express(),null,{
   wsOptions: {
@@ -17,14 +20,18 @@ const { app, getWss, applyTo } = expressWs(express(),null,{
 });
 const port = 8080;
 
+//  webpacked pages available
+app.use("/",express.static(resolve(__dirname,"../../dist/app")))
+
+//  recordings available skipping cors
 app.use("/recordings",cors(), express.static(resolve(__dirname,"../../recordings")))
 
 app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname,"../app/index.html"));
+  res.sendFile(resolve(__dirname,"../app/home.html"));
 });
 // @TODO better bundle serving
 app.get("/bundle.js", (req, res) => {
-  res.sendFile(resolve(__dirname,"../app/bundle.js"))
+  res.sendFile(resolve(__dirname,"../app/pages/home/bundle.js"))
 })
 
 app.ws('/', function(ws, req) {
@@ -86,9 +93,10 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
 })
 
 
-import recordAudioVideoStream from './recordAudioVideoStream'
+import recordAudioVideoStream from './recordAudioVideoStream.js'
 const connectionManager = WebRtcConnectionManager.create(recordAudioVideoStream);
-mount(app, connectionManager, `/webrtc-prototype`);
+mount(app, connectionManager, `/webrtc-prototype/`);
+
 
 app.listen(port, () => {
   console.log(`Socket server listening on port ${port}`)

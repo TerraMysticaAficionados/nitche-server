@@ -1,20 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-module.exports = {
+
+const pagesSrc = path.resolve(__dirname, 'src/app/pages/')
+
+const tsWebpackConfig = {
   mode: 'development',
-  entry: path.resolve(__dirname, 'src/app/index.ts'),
   devtool: 'inline-source-map',
-  output: {
-    path: path.resolve(__dirname, 'dist/app'),
-    filename: 'bundle.js',
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/app/index.html',
-      title: 'nitcheServer',
-      filename: './index.html',
-    })
-  ],
   module: {
     rules: [
       {
@@ -26,7 +17,67 @@ module.exports = {
         use: [{
           loader: 'ts-loader',
           options: {
-            configFile: "tsconfig.json"
+            configFile: "tsconfig.app.json"
+          }
+        }],
+        exclude: [/node_modules/],
+      }
+    ]
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+    // modules: ['node_modules'],
+  }
+}
+
+const homePageConfig = {
+  ...tsWebpackConfig,
+  entry: path.resolve(pagesSrc,'home/index.ts'),
+  output: {
+    path: path.resolve(__dirname, 'dist/app'),
+    filename: "home.bundle.js"
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/app/pages/home/index.html',
+      title: 'HOME',
+      filename: 'home.html',
+    })
+  ],
+}
+
+const twoPageConfig = {
+  ...tsWebpackConfig,
+  entry: path.resolve(pagesSrc,'two/index.ts'),
+  output: {
+    path: path.resolve(__dirname, 'dist/app'),
+    filename: "two.bundle.js"
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/app/pages/two/index.html',
+      title: 'TWO',
+      filename: 'two.html',
+    })
+  ],
+}
+
+const serverConfig = {
+  mode: 'development',
+  entry: path.resolve(__dirname, 'src/server/index.ts'),
+  devtool: 'inline-source-map',
+  output: {
+    path: path.resolve(__dirname, 'dist/server')
+  },
+  target:"node",
+  module: {
+    rules: [
+      {
+        test: /\.ts/,
+        use: [{
+          loader: 'ts-loader',
+          options: {
+            configFile: "tsconfig.server.json"
           }
         }],
         exclude: [/node_modules/],
@@ -37,3 +88,9 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   }
 }
+
+module.exports = [
+  homePageConfig,
+  twoPageConfig,
+  // serverConfig
+]
