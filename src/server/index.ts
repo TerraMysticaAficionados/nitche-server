@@ -27,11 +27,11 @@ app.use("/",express.static(resolve(__dirname,"../../dist/app")))
 app.use("/recordings",cors(), express.static(resolve(__dirname,"../../recordings")))
 
 app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname,"../app/home.html"));
+  res.sendFile(resolve(__dirname,"../app/home/index.html"));
 });
 // @TODO better bundle serving
 app.get("/bundle.js", (req, res) => {
-  res.sendFile(resolve(__dirname,"../app/pages/home/bundle.js"))
+  res.sendFile(resolve(__dirname,"../app/home/bundle.js"))
 })
 
 app.ws('/', function(ws, req) {
