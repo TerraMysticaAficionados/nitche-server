@@ -9,6 +9,7 @@ export function mount(app, connectionManager, prefix = '') {
   app.post(`${prefix}/connections`, async (req, res) => {
     try {
       const connection = await connectionManager.createConnection();
+      console.log("TEST", connection.id)
       res.send(connection);
     } catch (error) {
       console.error(error);
@@ -65,6 +66,7 @@ export function mount(app, connectionManager, prefix = '') {
       return;
     }
     try {
+      console.log("TEST", id, req.body)
       await connection.applyAnswer(req.body);
       res.send(connection.toJSON().remoteDescription);
     } catch (error) {

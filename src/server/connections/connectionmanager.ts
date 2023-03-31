@@ -4,12 +4,23 @@
 import {v4 as uuidv4} from "uuid"
 import DefaultConnection from "./connection.js"
 
+export interface ConnectionManagerOptions {
+  Connection: new(id: string) => DefaultConnection
+  generateId: () => string
+}
+
 class ConnectionManager {
-  constructor(options = {}) {
-    options = {
+
+  createConnection: () => DefaultConnection
+  getConnection: (id: string) => DefaultConnection|null
+  getConnections: () => DefaultConnection[]
+
+  constructor(initOptions:Partial<ConnectionManagerOptions> = {}) {
+    
+    const options:ConnectionManagerOptions = {
       Connection: DefaultConnection,
       generateId: uuidv4,
-      ...options
+      ...initOptions
     };
 
     const {
@@ -17,7 +28,7 @@ class ConnectionManager {
       generateId
     } = options;
 
-    const connections = new Map();
+    const connections = new Map<string,DefaultConnection>();
     const closedListeners = new Map();
 
     function createId() {
@@ -30,7 +41,7 @@ class ConnectionManager {
       } while (true);
     }
 
-    function deleteConnection(connection) {
+    function deleteConnection(connection:DefaultConnection) {
       // 1. Remove "closed" listener.
       const closedListener = closedListeners.get(connection);
       closedListeners.delete(connection);

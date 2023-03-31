@@ -44,6 +44,7 @@
     "@types/express-ws": "^3.0.1",
     "@types/fluent-ffmpeg": "^2.1.21",
     "@types/lodash": "^4.14.191",
+    "@types/uuid": "^9.0.1",
     "html-webpack-plugin": "^5.5.0",
     "nodemon": "^2.0.22",
     "ts-loader": "^9.4.2",

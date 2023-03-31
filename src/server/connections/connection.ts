@@ -3,8 +3,12 @@
 
 import EventEmitter from 'events';
 
-class Connection extends EventEmitter {
-  constructor(id) {
+export type ConnectionState = "open" | "closed"
+
+export default class Connection extends EventEmitter {
+  id: string
+  state: ConnectionState
+  constructor(id: string) {
     super();
     this.id = id;
     this.state = 'open';
@@ -22,5 +26,3 @@ class Connection extends EventEmitter {
     };
   }
 }
-
-export default Connection;

@@ -20,6 +20,13 @@ const { app, getWss, applyTo } = expressWs(express(),null,{
 });
 const port = 8080;
 
+app.use(cors({
+  origin: "*",//'http://localhost:3000',
+  optionsSuccessStatus: 200,
+  methods: "GET,POST"
+}))
+app.use(express.json())
+
 //  webpacked pages available
 app.use("/",express.static(resolve(__dirname,"../../dist/app")))
 
@@ -95,7 +102,7 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
 
 import recordAudioVideoStream from './recordAudioVideoStream.js'
 const connectionManager = WebRtcConnectionManager.create(recordAudioVideoStream);
-mount(app, connectionManager, `/webrtc-prototype/`);
+mount(app, connectionManager, `/webrtc-prototype`);
 
 
 app.listen(port, () => {
