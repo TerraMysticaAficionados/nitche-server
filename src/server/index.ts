@@ -73,17 +73,33 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
     ws.on('message', function(data:Buffer) {
       istream.push(Buffer.from(new Uint8Array(data)));
       if(!recorder) {
+        /*
+        https://github.com/shaka-project/shaka-player/issues/1287
+        some low latency settings explanation 
+        */
         let recordingPath = `./recordings/${req.params.id}/manifest.mpd`
         recorder = ffmpeg().addInput(istream).addInputOptions([
           '-re',
-        ]).addOutputOption([
-          '-f', 'dash'
+          '-probesize', "32",
+          // '-fflags', 'nobuffer',
+          // '-flags', 'low_delay',
+          // '-analyzeduration', '0',
+        ]).addOutputOptions([
+          '-f', 'dash',
+          '-streaming', '1',
+          '-seg_duration', '2',
+          // '-use_template', '1',
+          // '-use_timeline', '0'
         ])
-        .on('start', ()=>{
+        .on('start', (command)=>{
           console.log('Start recording >> ', recordingPath)
+          console.log('command', command)
         })
         .on('end', ()=>{
           console.log('Stop recording >> ', recordingPath)
+        })
+        .on("error", (e) => {
+          console.log('Error during recording', e)
         })
         .output(recordingPath)
         recorder.run()
