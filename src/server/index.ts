@@ -13,12 +13,20 @@ import { fileURLToPath } from 'url';
 import path from "path"
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+import * as dotenv from 'dotenv'
+import * as dotenvExpand from 'dotenv-expand'
+const envSettings = dotenv.config({
+  "path": path.resolve(process.cwd(), '.env.dev')
+})
+dotenvExpand.expand(envSettings)  //  dotenvExpand allows .env to use system variables and self referential variables
+
 const { app, getWss, applyTo } = expressWs(express(),null,{
   wsOptions: {
     perMessageDeflate: false
   }
 });
-const port = 8080;
+
+const port = process.env.NITCHE_SERVER_PORT || 3000;
 
 app.use(cors({
   origin: "*",//'http://localhost:3000',
