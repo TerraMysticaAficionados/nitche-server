@@ -15,7 +15,7 @@ const VIDEO_OUTPUT_FILE = './recording.mp4'
 
 let UID = 0;
 
-function beforeOffer(peerConnection) {
+export function beforeOffer(peerConnection) {
   const audioTransceiver = peerConnection.addTransceiver('audio');
   const videoTransceiver = peerConnection.addTransceiver('video');
   
@@ -139,4 +139,3 @@ function beforeOffer(peerConnection) {
   }
 }
 
-export default { beforeOffer };

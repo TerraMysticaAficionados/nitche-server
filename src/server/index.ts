@@ -20,7 +20,7 @@ const envSettings = dotenv.config({
 })
 dotenvExpand.expand(envSettings)  //  dotenvExpand allows .env to use system variables and self referential variables
 
-const { app, getWss, applyTo } = expressWs(express(),null,{
+const { app, getWss, applyTo } = expressWs(express(),undefined,{
   wsOptions: {
     perMessageDeflate: false
   }
@@ -34,6 +34,10 @@ app.use(cors({
   methods: "GET,POST"
 }))
 app.use(express.json())
+app.use((req,res, next) => {
+  console.log(req.method, req.url)
+  return next()
+})
 
 //  webpacked pages available
 app.use("/",express.static(resolve(__dirname,"../../dist/app")))
@@ -108,10 +112,23 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
 })
 
 
-import recordAudioVideoStream from './recordAudioVideoStream.js'
-const connectionManager = WebRtcConnectionManager.create(recordAudioVideoStream);
-mount(app, connectionManager, `/webrtc-prototype`);
+import { beforeOffer as recordAudioVideoStreamSetup } from './webrtc/recordAudioVideoStream.js'
+const recordAVConnectionManager = WebRtcConnectionManager.create({
+  beforeOffer: recordAudioVideoStreamSetup
+});
+mount(app, recordAVConnectionManager, `/webrtc-prototype`);
 
+import { beforeOffer as webRTCBroadcasterSetup } from "./webrtc/broadcaster.js";
+const WebRTCBroadcastConnectionManager = WebRtcConnectionManager.create({
+  beforeOffer: webRTCBroadcasterSetup
+});
+mount(app, WebRTCBroadcastConnectionManager, `/webrtc-broadcaster`);
+
+import { beforeOffer as webRTCViewerSetup } from './webrtc/viewer.js'
+const WebRTCViewerConnectionManager = WebRtcConnectionManager.create({
+  beforeOffer: webRTCViewerSetup
+});
+mount(app, WebRTCViewerConnectionManager, `/webrtc-viewer`);
 
 app.listen(port, () => {
   console.log(`Socket server listening on port ${port}`)
