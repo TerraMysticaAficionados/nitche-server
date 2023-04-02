@@ -1,5 +1,5 @@
 import "./global.css"
-import test from "../../lib/test"
+import test from "../../lib/test.js"
 
 type StartupFunction = () => void
 
