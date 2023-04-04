@@ -39,27 +39,22 @@ app.use((req,res, next) => {
   return next()
 })
 
-//  webpacked pages available
-app.use("/",express.static(resolve(__dirname,"../../dist/app")))
+if(process.env.SERVE_APP) {
+  //  webpacked pages available
+  app.use("/",express.static(resolve(__dirname,"../../dist/app")))
+}
 
-//  recordings available skipping cors
-app.use("/recordings",cors(), express.static(resolve(__dirname,"../../recordings")))
-
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname,"../app/home/index.html"));
-});
-// @TODO better bundle serving
-app.get("/bundle.js", (req, res) => {
-  res.sendFile(resolve(__dirname,"../app/home/bundle.js"))
-})
-
-app.ws('/', function(ws, req) {
+//  basic websocket 
+app.ws('/ping', function(ws, req) {
+  console.log('ping', req);
   ws.on('message', function(msg) {
-    console.log(msg);
+    ws.send('pong')
   });
-  console.log('socket', req);
 });
 
+//  Socket to DASH
+//  DASH recordings available skipping cors
+app.use("/recordings",cors(), express.static(resolve(__dirname,"../../recordings")))
 app.ws("/socket-prototype/:id", async (ws, req) => {
   console.log('socket-prototype ping', req.params.id);
 
@@ -79,7 +74,6 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
   }
   
   try {
-  //  https://www.geeksforgeeks.org/node-js-fs-open-method/
     let istream = new PassThrough()
     let recorder:any = null
     ws.on('message', function(data:Buffer) {
@@ -102,8 +96,6 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
       }
     });
     ws.on("close", () => {
-      console.log("stream closed");
-
       if(recorder) istream.end()
     })
   } catch(error) {
@@ -111,19 +103,23 @@ app.ws("/socket-prototype/:id", async (ws, req) => {
   }
 })
 
+//  WebRTC streaming
 
+//  WebRTC -> MP4
 import { beforeOffer as recordAudioVideoStreamSetup } from './webrtc/recordAudioVideoStream.js'
 const recordAVConnectionManager = WebRtcConnectionManager.create({
   beforeOffer: recordAudioVideoStreamSetup
 });
 mount(app, recordAVConnectionManager, `/webrtc-prototype`);
 
+//  client WebRTC -> server WebRTC
 import { beforeOffer as webRTCBroadcasterSetup } from "./webrtc/broadcaster.js";
 const WebRTCBroadcastConnectionManager = WebRtcConnectionManager.create({
   beforeOffer: webRTCBroadcasterSetup
 });
 mount(app, WebRTCBroadcastConnectionManager, `/webrtc-broadcaster`);
 
+// server WebRTC -> client WebRTC
 import { beforeOffer as webRTCViewerSetup } from './webrtc/viewer.js'
 const WebRTCViewerConnectionManager = WebRtcConnectionManager.create({
   beforeOffer: webRTCViewerSetup
