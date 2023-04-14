@@ -13,8 +13,8 @@ class WebRtcConnectionManager {
 
     const connectionManager = new ConnectionManager(options);
 
-    this.createConnection = async () => {
-      const connection = connectionManager.createConnection();
+    this.createConnection = async (id) => {
+      const connection = connectionManager.createConnection(id);
       await connection.doOffer();
       return connection;
     };

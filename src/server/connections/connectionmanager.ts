@@ -11,7 +11,7 @@ export interface ConnectionManagerOptions {
 
 class ConnectionManager {
 
-  createConnection: () => DefaultConnection
+  createConnection: (id:string|undefined) => DefaultConnection
   getConnection: (id: string) => DefaultConnection|null
   getConnections: () => DefaultConnection[]
 
@@ -51,8 +51,8 @@ class ConnectionManager {
       connections.delete(connection.id);
     }
 
-    this.createConnection = () => {
-      const id = createId();
+    this.createConnection = (id) => {
+      id = id || createId();
       const connection = new Connection(id);
 
       // 1. Add the "closed" listener.

@@ -7,7 +7,11 @@ export function beforeOffer(peerConnection) {
   const audioTransceiver = peerConnection.addTransceiver('audio');
   const videoTransceiver = peerConnection.addTransceiver('video');
   
-  function onNewBroadcast({ audioTrack, videoTrack }) {
+  function onNewBroadcast({ connectionId, audioTrack, videoTrack }) {
+    if(peerConnection.connectionId != connectionId) {
+      console.log("viewer",peerConnection.connectionId, "ignoring new connection", connectionId)
+      return
+    }
     audioTransceiver.sender.replaceTrack(audioTrack),
     videoTransceiver.sender.replaceTrack(videoTrack) 
   }

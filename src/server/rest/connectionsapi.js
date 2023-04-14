@@ -16,6 +16,22 @@ export function mount(app, connectionManager, prefix = '') {
       res.sendStatus(500);
     }
   });
+  
+  app.post(`${prefix}/connections/:id`, async (req, res) => {
+    const { id } = req.params;
+    const connection = connectionManager.getConnection(id);
+    if (connection) {
+      res.sendStatus(422);  //  Unprocessable Entity - Duplicate
+      return;
+    }
+    try {
+      const connection = await connectionManager.createConnection(id);
+      res.send(connection);
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  });
 
   app.delete(`${prefix}/connections/:id`, (req, res) => {
     const { id } = req.params;

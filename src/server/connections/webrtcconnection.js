@@ -34,6 +34,7 @@ class WebRtcConnection extends Connection {
     const peerConnection = new RTCPeerConnection({
       sdpSemantics: 'unified-plan'
     });
+    peerConnection.externalId = id
 
     beforeOffer(peerConnection);
 
