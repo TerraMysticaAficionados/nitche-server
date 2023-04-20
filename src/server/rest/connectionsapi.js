@@ -21,7 +21,7 @@ export function mount(app, connectionManager, prefix = '') {
     const { id } = req.params;
     const connection = connectionManager.getConnection(id);
     if (connection) {
-      res.sendStatus(422);  //  Unprocessable Entity - Duplicate
+      res.send(connection)
       return;
     }
     try {
