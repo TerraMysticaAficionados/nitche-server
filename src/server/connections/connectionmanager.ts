@@ -4,14 +4,19 @@
 import {v4 as uuidv4} from "uuid"
 import DefaultConnection from "./connection.js"
 
+interface ConnectionOptions {
+  broadcastId: string,
+  broadcaster: boolean|undefined
+}
+
 export interface ConnectionManagerOptions {
-  Connection: new(id: string) => DefaultConnection
+  Connection: new(id: string, options: ConnectionOptions) => DefaultConnection
   generateId: () => string
 }
 
 class ConnectionManager {
 
-  createConnection: (id:string|undefined) => DefaultConnection
+  createConnection: (options: ConnectionOptions) => DefaultConnection
   getConnection: (id: string) => DefaultConnection|null
   getConnections: () => DefaultConnection[]
 
@@ -51,9 +56,10 @@ class ConnectionManager {
       connections.delete(connection.id);
     }
 
-    this.createConnection = (id) => {
-      id = id || createId();
-      const connection = new Connection(id);
+    this.createConnection = (options) => {
+      console.log("ConnectionManager.createConnection", options)
+      const id = createId();
+      const connection = new Connection(id, options);
 
       // 1. Add the "closed" listener.
       function closedListener() { deleteConnection(connection); }

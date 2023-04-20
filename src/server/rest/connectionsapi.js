@@ -10,26 +10,13 @@ export function mount(app, connectionManager, prefix = '') {
   app.post(`${prefix}/connections`, async (req, res) => {
     const connectionParams = req.body
     console.log("connectionParams",prefix,typeof(connectionParams), connectionParams)
+    let broadcastId = connectionParams.broadcastId
+    let broadcaster = connectionParams.broadcaster
     try {
-      const connection = await connectionManager.createConnection();
-      res.send(connection);
-    } catch (error) {
-      console.error(error);
-      res.sendStatus(500);
-    }
-  });
-  
-  app.post(`${prefix}/connections/:id`, async (req, res) => {
-    const { id } = req.params;
-    const connectionParams = req.body
-    console.log("connectionParams",prefix, typeof(connectionParams), connectionParams)
-    const connection = connectionManager.getConnection(id);
-    if (connection) {
-      res.send(connection)
-      return;
-    }
-    try {
-      const connection = await connectionManager.createConnection(id);
+      const connection = await connectionManager.createConnection({
+        broadcastId,
+        broadcaster
+      });
       res.send(connection);
     } catch (error) {
       console.error(error);

@@ -11,6 +11,7 @@ const TIME_TO_RECONNECTED = 10000;
 
 class WebRtcConnection extends Connection {
   constructor(id, options = {}) {
+    console.log("WebRtcConnection options", options)
     super(id);
 
     options = {
@@ -21,6 +22,7 @@ class WebRtcConnection extends Connection {
       timeToConnected: TIME_TO_CONNECTED,
       timeToHostCandidates: TIME_TO_HOST_CANDIDATES,
       timeToReconnected: TIME_TO_RECONNECTED,
+      broadcaster: false,
       ...options
     };
 
@@ -28,15 +30,19 @@ class WebRtcConnection extends Connection {
       RTCPeerConnection,
       beforeOffer,
       timeToConnected,
-      timeToReconnected
+      timeToReconnected,
+      broadcastId,
+      broadcaster
     } = options;
 
     const peerConnection = new RTCPeerConnection({
       sdpSemantics: 'unified-plan'
     });
-    peerConnection.externalId = id
 
-    beforeOffer(peerConnection);
+    beforeOffer(peerConnection, {
+      broadcastId,
+      broadcaster
+    });
 
     let connectionTimer = options.setTimeout(() => {
       if (peerConnection.iceConnectionState !== 'connected'

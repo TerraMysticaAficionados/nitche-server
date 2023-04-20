@@ -13,8 +13,9 @@ class WebRtcConnectionManager {
 
     const connectionManager = new ConnectionManager(options);
 
-    this.createConnection = async (id) => {
-      const connection = connectionManager.createConnection(id);
+    this.createConnection = async (options = {}) => {
+      console.log("WebRtcConnectionManager.createConnection", options)
+      const connection = connectionManager.createConnection(options);
       await connection.doOffer();
       return connection;
     };
@@ -35,8 +36,8 @@ class WebRtcConnectionManager {
 
 WebRtcConnectionManager.create = function create(options) {
   return new WebRtcConnectionManager({
-    Connection: function(id) {
-      return new WebRtcConnection(id, options);
+    Connection: function(id, requestOptions) {
+      return new WebRtcConnection(id, {...options,...requestOptions});
     }
   });
 };
