@@ -14,7 +14,7 @@ export default class Broadcast {
     const ogClose = this.sourcePeerConnection.close
     this.sourcePeerConnection.close = () => {
       this.destroy()
-      return ogClose.apply(this, arguments)
+      return ogClose.apply(this.sourcePeerConnection, arguments)
     }
   }
 

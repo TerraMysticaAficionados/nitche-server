@@ -28,7 +28,7 @@ export function beforeOffer(peerConnection, options) {
 
   const { close } = peerConnection;
   peerConnection.close = function() {
-    console.log(peerConnection.connectionId, "viewer stream closing")
+    console.log("viewer stream closing")
     broadcastManager.removeListener('newBroadcast', onNewBroadcast);
     broadcastManager.removeListener('endBroadcast', onEndBroadcast);
     return close.apply(this, arguments);
