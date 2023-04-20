@@ -113,7 +113,7 @@ const recordAVConnectionManager = WebRtcConnectionManager.create({
 mount(app, recordAVConnectionManager, `/webrtc-prototype`);
 
 //  client WebRTC -> server WebRTC
-import { beforeOffer as webRTCBroadcasterSetup } from "./webrtc/broadcaster.js";
+import { beforeOffer as webRTCBroadcasterSetup } from "./webrtc/broadcasts.js";
 const WebRTCBroadcastConnectionManager = WebRtcConnectionManager.create({
   beforeOffer: webRTCBroadcasterSetup
 });

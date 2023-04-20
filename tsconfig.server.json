@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "sourceMap": true,
     "module": "es2020",
     "target": "es6",

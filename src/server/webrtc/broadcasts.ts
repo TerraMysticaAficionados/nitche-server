@@ -4,8 +4,8 @@
 // export const broadcaster = new EventEmitter();
 // const { on } = broadcaster;
 
-import Broadcast from "./Broadcast";
-import BroadcastManager from "./BroadcastManager";
+import Broadcast from "./Broadcast.js";
+import BroadcastManager from "./BroadcastManager.js";
 
 export const broadcastManager = new BroadcastManager()
 

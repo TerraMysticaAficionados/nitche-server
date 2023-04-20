@@ -1,7 +1,7 @@
 'use strict';
 
-import { broadcastManager } from "./broadcasts";
-import { BroadcastEvent } from "./BroadcastManager";
+import { broadcastManager } from "./broadcasts.js";
+import { BroadcastEvent } from "./BroadcastManager.js";
 
 export function beforeOffer(peerConnection) {
   const broadcastId = peerConnection.broadcastId

@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import Broadcast from './Broadcast';
+import Broadcast from './Broadcast.js';
 
 export const BroadcastEvent = {
   newBroadcast: "newBroadcast",
@@ -14,7 +14,7 @@ export interface IBroadcastManager extends EventEmitter {
 } 
 
 export default class BroadcastManager extends EventEmitter implements IBroadcastManager {
-  broadcastMap: Map<string, Broadcast>
+  broadcastMap: Map<string, Broadcast> = new Map()
   addBroadcast(broadcast: Broadcast): Broadcast {
     this.broadcastMap.set(broadcast.id, broadcast)
     this.emit(BroadcastEvent.newBroadcast, broadcast.id)

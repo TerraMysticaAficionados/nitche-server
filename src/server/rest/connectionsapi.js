@@ -8,6 +8,8 @@ export function mount(app, connectionManager, prefix = '') {
   });
 
   app.post(`${prefix}/connections`, async (req, res) => {
+    const connectionParams = req.body
+    console.log("connectionParams",prefix,typeof(connectionParams), connectionParams)
     try {
       const connection = await connectionManager.createConnection();
       res.send(connection);
@@ -19,6 +21,8 @@ export function mount(app, connectionManager, prefix = '') {
   
   app.post(`${prefix}/connections/:id`, async (req, res) => {
     const { id } = req.params;
+    const connectionParams = req.body
+    console.log("connectionParams",prefix, typeof(connectionParams), connectionParams)
     const connection = connectionManager.getConnection(id);
     if (connection) {
       res.send(connection)
