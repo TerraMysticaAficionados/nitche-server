@@ -1,6 +1,8 @@
 //  https://github.com/node-webrtc/node-webrtc-examples.git
 'use strict';
 
+import { broadcastManager } from "../webrtc/broadcaster.js";
+
 export function mount(app, connectionManager, prefix = '') {
   console.log("mounting",`${prefix}`)
   app.get(`${prefix}/connections`, (req, res) => {
@@ -12,6 +14,12 @@ export function mount(app, connectionManager, prefix = '') {
     console.log("connectionParams",prefix,typeof(connectionParams), connectionParams)
     let broadcastId = connectionParams.broadcastId
     let broadcaster = connectionParams.broadcaster
+
+    if(broadcaster) {
+      broadcastManager.destroyBroadcast(broadcastId)
+      console.log("destroyed broadcast")
+    }
+    
     try {
       const connection = await connectionManager.createConnection({
         broadcastId,

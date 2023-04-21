@@ -12,14 +12,13 @@ export function beforeOffer(peerConnection, options) {
   function onNewBroadcast(broadcastId: string) {
     const broadcast = broadcastManager.getBroadcast(broadcastId)
     if(!broadcast) return
-    // console.log(audioTransceiver.sender, broadcast?.sourceAudioTrack)
-    // console.log(videoTransceiver.sender, broadcast?.sourceVideoTrack)
     audioTransceiver.sender.replaceTrack(broadcast.sourceAudioTrack),
     videoTransceiver.sender.replaceTrack(broadcast.sourceVideoTrack) 
   }
   function onEndBroadcast() {
     peerConnection.close()
   }
+  console.log("broadcasts", broadcastManager.listBroadcasts())
 
   if(broadcastManager.hasBroadcast(broadcastId)) {
     console.log("viewer found broadcast", broadcastId)
@@ -28,7 +27,7 @@ export function beforeOffer(peerConnection, options) {
 
   const { close } = peerConnection;
   peerConnection.close = function() {
-    console.log("viewer stream closing")
+    console.log(peerConnection.id, "viewer stream closing")
     broadcastManager.removeListener('newBroadcast', onNewBroadcast);
     broadcastManager.removeListener('endBroadcast', onEndBroadcast);
     return close.apply(this, arguments);

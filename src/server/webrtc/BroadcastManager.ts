@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import Broadcast from './Broadcast.js';
+import { forEach } from 'lodash';
 
 export const BroadcastEvent = {
   newBroadcast: "newBroadcast",
@@ -9,12 +10,17 @@ export const BroadcastEvent = {
 export interface IBroadcastManager extends EventEmitter {
   addBroadcast(broadcast: Broadcast): Broadcast
   hasBroadcast(id: string): boolean
+  listBroadcasts(): Broadcast[]
   getBroadcast(id:string): Broadcast|undefined
   destroyBroadcast(id:string): 1|0
 } 
 
 export default class BroadcastManager extends EventEmitter implements IBroadcastManager {
   broadcastMap: Map<string, Broadcast> = new Map()
+  constructor() {
+    super()
+    console.log("BroadcastManager.constructor")
+  }
   addBroadcast(broadcast: Broadcast): Broadcast {
     this.broadcastMap.set(broadcast.id, broadcast)
     this.emit(BroadcastEvent.newBroadcast, broadcast.id)
@@ -26,7 +32,11 @@ export default class BroadcastManager extends EventEmitter implements IBroadcast
   getBroadcast(id: string): Broadcast|undefined {
     return this.broadcastMap.get(id)
   }
+  listBroadcasts(): Broadcast[] {
+    return Array.from(this.broadcastMap.values())
+  }
   destroyBroadcast(id: string) {
+    console.log("destroy broadcast")
     const broadcast = this.broadcastMap.get(id)
     if(!broadcast) {
       return 0

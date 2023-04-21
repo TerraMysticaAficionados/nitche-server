@@ -15,8 +15,12 @@ export function beforeOffer(peerConnection, options) {
   const broadcast = new Broadcast(broadcastId, peerConnection)
   broadcastManager.addBroadcast(broadcast)
   const { close } = peerConnection;
-  peerConnection.close = function() {
-    broadcastManager.destroyBroadcast(broadcastId)
-    return close.apply(this, arguments);
+  peerConnection.close = () => {
+    console.log(peerConnection.id, "broadcaster pc closed")
+    const broadcast = broadcastManager.getBroadcast(broadcastId)
+    if(peerConnection == broadcast?.sourcePeerConnection){
+      broadcastManager.destroyBroadcast(broadcastId)
+    }
+    return close.apply(peerConnection, arguments);
   };
 }
