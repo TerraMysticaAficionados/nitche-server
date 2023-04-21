@@ -113,7 +113,7 @@ const recordAVConnectionManager = WebRtcConnectionManager.create({
 mount(app, recordAVConnectionManager, `/webrtc-prototype`);
 
 //  client WebRTC -> server WebRTC
-import { beforeOffer as webRTCBroadcasterSetup } from "./webrtc/broadcaster.js";
+import { broadcastManager, beforeOffer as webRTCBroadcasterSetup } from "./webrtc/broadcaster.js";
 const WebRTCBroadcastConnectionManager = WebRtcConnectionManager.create({
   beforeOffer: webRTCBroadcasterSetup
 });
@@ -125,6 +125,16 @@ const WebRTCViewerConnectionManager = WebRtcConnectionManager.create({
   beforeOffer: webRTCViewerSetup
 });
 mount(app, WebRTCViewerConnectionManager, `/webrtc-viewer`);
+
+app.get("/api/broadcasts", (req,res, next) => {
+  try {
+    const broadcastIdList = broadcastManager.listBroadcasts().map(broadcast => broadcast.id)
+    return res.send(JSON.stringify(broadcastIdList))
+  } catch(error) {
+    console.log(error)
+    return next()
+  }
+})
 
 app.listen(port, () => {
   console.log(`Socket server listening on port ${port}`)

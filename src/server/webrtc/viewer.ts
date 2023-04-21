@@ -18,8 +18,7 @@ export function beforeOffer(peerConnection, options) {
   function onEndBroadcast() {
     peerConnection.close()
   }
-  console.log("broadcasts", broadcastManager.listBroadcasts())
-
+  
   if(broadcastManager.hasBroadcast(broadcastId)) {
     console.log("viewer found broadcast", broadcastId)
     onNewBroadcast(broadcastId);
